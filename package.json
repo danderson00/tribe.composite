@@ -1,14 +1,14 @@
 {
     "name": "tribe.composite",
-    "version": "0.2.10",
+    "version": "0.2.13",
     "description": "A comprehensive framework for building composite user interfaces.",
     "dependencies": {
-		"tribe.pubsub": "~0.2.2"
+		"tribe.pubsub": "~0.3.6"
     },
 	"devDependencies": {
 	},
     "main": "Build/Tribe.Composite.js",
-    "homepage": "http://github.com/danderson00/tribe",
+    "homepage": "http://github.com/danderson00/tribe.composite",
     "author": {
         "name": "Dale Anderson",
         "email": "tribejs@gmail.com",
@@ -29,7 +29,7 @@
         }
     ],
     "bugs": {
-        "url": "http://github.com/danderson00/tribe/issues"
+        "url": "http://github.com/danderson00/tribe.composite/issues"
     },
     "license": {
         "type": "MIT",
@@ -37,7 +37,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/danderson00/tribe.git"
+        "url": "git://github.com/danderson00/tribe.composite.git"
     },
     "engines": {
         "node": ">=0.6.0"
