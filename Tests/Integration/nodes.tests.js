@@ -19,7 +19,7 @@
     test("createNode inherits context from parent element", function () {
         T.Events.spy = sinon.spy();
         T.options.events = ['loadResources', 'createModel', 'initialiseModel', 'renderPane', 'renderComplete', 'spy', 'active', 'dispose'];
-        
+
         T.createNode('#qunit-fixture', { path: 'Utilities/dynamicParent' });
         ok(T.Events.spy.calledTwice);
         equal(T.Events.spy.firstCall.args[1], T.Events.spy.secondCall.args[1]);
@@ -29,6 +29,14 @@
         var node = T.createNode('#qunit-fixture', { path: 'Utilities/parent' });
         equal(node.pane.path, '/Utilities/parent');
         equal(node.children.length, 1);
+    });
+
+    test("scope cascades to child nodes and panes", function () {
+        var node = new T.Types.Node();
+        node.scope = 'test';
+        T.createNode('#qunit-fixture', { path: 'Utilities/parent' }, node);
+        equal(node.children[0].children[0].scope, 'test');
+        equal(node.children[0].children[0].pane.scope, 'test');
     });
 
     asyncTest("context.renderOperation resolves when render operation is complete", function () {

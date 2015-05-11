@@ -1,11 +1,11 @@
 ﻿T.Types.Pane = function (options) {
-    T.Utils.inheritOptions(options, this, ['path', 'data', 'element', 'transition', 'reverseTransitionIn', 'handlesNavigation', 'pubsub', 'id', 'skipPath']);
+    T.Utils.inheritOptions(options, this, ['path', 'data', 'element', 'transition', 'reverseTransitionIn', 'handlesNavigation', 'pubsub', 'id', 'skipPath', 'scope']);
 
     // events we are interested in hooking in to - this could be done completely generically by the pipeline
     this.is = {
         rendered: $.Deferred(),
         disposed: $.Deferred()
-    };    
+    };
 };
 
 T.Types.Pane.prototype.navigate = function (pathOrPane, data) {
@@ -35,7 +35,7 @@ T.Types.Pane.prototype.dispose = function () {
 
 T.Types.Pane.prototype.inheritPathFrom = function (node) {
     node = node && node.nodeForPath();
-    var pane = node && node.pane;    
+    var pane = node && node.pane;
     var path = T.Path(this.path);
     if (path.isAbsolute() || !pane)
         this.path = path.makeAbsolute().toString();
@@ -63,4 +63,3 @@ T.Types.Pane.prototype.startActor = function(path, args) {
     var actor = T.context().actors[path];
     this.pubsub.startActor.apply(this.pubsub, [actor.constructor].concat(Array.prototype.slice.call(arguments, 1)));
 };
-

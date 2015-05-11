@@ -8,7 +8,10 @@
 
     utils.bindPane = function (node, element, paneOptions, context) {
         context = context || utils.contextFor(element) || T.context();
-        var pane = new T.Types.Pane($.extend({ element: $(element)[0] }, paneOptions));
+        var pane = new T.Types.Pane($.extend({
+            element: $(element)[0],
+            scope: node.scope
+        }, paneOptions));
         node.setPane(pane);
 
         context.renderOperation.add(pane);

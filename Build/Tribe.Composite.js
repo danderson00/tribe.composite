@@ -518,7 +518,10 @@ T.Utils.normaliseBindings = function (valueAccessor, allBindingsAccessor) {
 
     utils.bindPane = function (node, element, paneOptions, context) {
         context = context || utils.contextFor(element) || T.context();
-        var pane = new T.Types.Pane($.extend({ element: $(element)[0] }, paneOptions));
+        var pane = new T.Types.Pane($.extend({
+            element: $(element)[0],
+            scope: node.scope
+        }, paneOptions));
         node.setPane(pane);
 
         context.renderOperation.add(pane);
@@ -956,6 +959,7 @@ T.Types.Node = function (parent, pane) {
     this.children = [];
     this.root = parent ? parent.root : this;
     this.id = T.Utils.getUniqueId();
+    this.scope = parent && parent.scope;
 
     if (parent) parent.children.push(this);
     if (pane) this.setPane(pane);
@@ -966,7 +970,7 @@ T.Types.Node.prototype.navigate = function (pathOrPane, data) {
     if (!T.Path(paneOptions.path).isAbsolute())
         // this is duplicated in Pane.inheritPathFrom - the concept (relative paths inherit existing paths) needs to be clearer
         paneOptions.path = T.Path(this.nodeForPath().pane.path).withoutFilename().combine(paneOptions.path).toString();
-    
+
     this.findNavigation().navigate(paneOptions);
 };
 
@@ -980,7 +984,7 @@ T.Types.Node.prototype.findNavigation = function() {
 
     else if (this.navigation)
         return this.navigation;
-        
+
     if (!this.parent) {
         this.navigation = new T.Types.Navigation(this);
         return this.navigation;
@@ -1003,7 +1007,7 @@ T.Types.Node.prototype.setPane = function (pane) {
 
     if (pane.handlesNavigation) {
         this.navigation = new T.Types.Navigation(this, pane.handlesNavigation);
-        
+
         // this sets this pane as the "default", accessible from panes outside the tree. Last in best dressed.
         this.root.defaultNavigation = this.navigation;
     }
@@ -1048,13 +1052,13 @@ T.Types.Operation = function () {
 };
 // Types/Pane.js
 T.Types.Pane = function (options) {
-    T.Utils.inheritOptions(options, this, ['path', 'data', 'element', 'transition', 'reverseTransitionIn', 'handlesNavigation', 'pubsub', 'id', 'skipPath']);
+    T.Utils.inheritOptions(options, this, ['path', 'data', 'element', 'transition', 'reverseTransitionIn', 'handlesNavigation', 'pubsub', 'id', 'skipPath', 'scope']);
 
     // events we are interested in hooking in to - this could be done completely generically by the pipeline
     this.is = {
         rendered: $.Deferred(),
         disposed: $.Deferred()
-    };    
+    };
 };
 
 T.Types.Pane.prototype.navigate = function (pathOrPane, data) {
@@ -1084,7 +1088,7 @@ T.Types.Pane.prototype.dispose = function () {
 
 T.Types.Pane.prototype.inheritPathFrom = function (node) {
     node = node && node.nodeForPath();
-    var pane = node && node.pane;    
+    var pane = node && node.pane;
     var path = T.Path(this.path);
     if (path.isAbsolute() || !pane)
         this.path = path.makeAbsolute().toString();
@@ -1112,7 +1116,6 @@ T.Types.Pane.prototype.startActor = function(path, args) {
     var actor = T.context().actors[path];
     this.pubsub.startActor.apply(this.pubsub, [actor.constructor].concat(Array.prototype.slice.call(arguments, 1)));
 };
-
 
 // Types/Pipeline.js
 T.Types.Pipeline = function (events, context) {

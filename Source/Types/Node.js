@@ -3,6 +3,7 @@
     this.children = [];
     this.root = parent ? parent.root : this;
     this.id = T.Utils.getUniqueId();
+    this.scope = parent && parent.scope;
 
     if (parent) parent.children.push(this);
     if (pane) this.setPane(pane);
@@ -13,7 +14,7 @@ T.Types.Node.prototype.navigate = function (pathOrPane, data) {
     if (!T.Path(paneOptions.path).isAbsolute())
         // this is duplicated in Pane.inheritPathFrom - the concept (relative paths inherit existing paths) needs to be clearer
         paneOptions.path = T.Path(this.nodeForPath().pane.path).withoutFilename().combine(paneOptions.path).toString();
-    
+
     this.findNavigation().navigate(paneOptions);
 };
 
@@ -27,7 +28,7 @@ T.Types.Node.prototype.findNavigation = function() {
 
     else if (this.navigation)
         return this.navigation;
-        
+
     if (!this.parent) {
         this.navigation = new T.Types.Navigation(this);
         return this.navigation;
@@ -50,7 +51,7 @@ T.Types.Node.prototype.setPane = function (pane) {
 
     if (pane.handlesNavigation) {
         this.navigation = new T.Types.Navigation(this, pane.handlesNavigation);
-        
+
         // this sets this pane as the "default", accessible from panes outside the tree. Last in best dressed.
         this.root.defaultNavigation = this.navigation;
     }
